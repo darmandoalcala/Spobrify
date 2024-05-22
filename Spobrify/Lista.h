@@ -45,12 +45,8 @@ public:
 			newNodo->anterior = actual;
 		}
 	}
-	void eliminar(int id) {
-		Nodo* actual = header;
-
-		while (actual != nullptr && actual->cancion.getId() != id) {
-			actual = actual->siguiente;
-		}
+	void eliminar(const string& nombre, int id) {
+		Nodo* actual = buscarPorNombreYID(nombre, id);
 
 		if (actual != nullptr) {
 			if (actual->anterior != nullptr) {

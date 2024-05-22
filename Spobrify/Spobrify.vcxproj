@@ -176,6 +176,7 @@
   <ItemGroup>
     <ClCompile Include="AgregarCancionForm.cpp" />
     <ClCompile Include="EditarCancionForm.cpp" />
+    <ClCompile Include="EliminarCancionForm.cpp" />
     <ClCompile Include="MainForm.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,9 @@
     </ClInclude>
     <ClInclude Include="Cancion.h" />
     <ClInclude Include="EditarCancionForm.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
+    <ClInclude Include="EliminarCancionForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="Lista.h" />
@@ -197,6 +201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EditarCancionForm.resx">
       <DependentUpon>EditarCancionForm.h</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EliminarCancionForm.resx">
+      <DependentUpon>EliminarCancionForm.h</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.h</DependentUpon>

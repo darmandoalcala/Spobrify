@@ -4,6 +4,8 @@
 #include <iostream>
 #include "AgregarCancionForm.h"
 #include "EditarCancionForm.h"
+#include "EliminarCancionForm.h"
+
 using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
@@ -749,7 +751,7 @@ namespace Spobrify {
 			this->Controls->Add(this->panel1);
 			this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
 			this->Name = L"MainForm";
-			this->Text = L"MainForm";
+			this->Text = L"Spobrify";
 			this->panel1->ResumeLayout(false);
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->eliminar_boton))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco3))->EndInit();
@@ -798,7 +800,7 @@ namespace Spobrify {
 		//**************CAMBIAR FONDO****************
 		this->panel3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)),
 			static_cast<System::Int32>(static_cast<System::Byte>(18)));
-		this->titulo_label->Text = L"SPOBRIFY - PROYECTO FINAL";
+		this->titulo_label->Text = L"SPOBRIFY - PROYECTO FINAL\nNombre Apellido\nNombre Apellido\nNombre Apellido\nNombre MATERIA";
 		this->titulo_label->Visible = true;	
 	}
 
@@ -963,6 +965,9 @@ namespace Spobrify {
 
 	private: System::Void eliminar_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//ELIMINAR CAMCION
 		//Abre nueva ventana (parametro lista de referencia).
+		EliminarCancionForm^ eliminarForm = gcnew EliminarCancionForm(lista);
+		eliminarForm->ShowDialog();
+		llenarGridViewFavoritas();									//Actualizar pantalla favoritas
 	}
 	private: System::Void reproducir_Click(System::Object^ sender, System::EventArgs^ e) {																//REPRODUCIR ACTUAL
 		if (this->reproduciendo == nullptr) {//SI NO REPRODUCE NADA ACTUALMENTE

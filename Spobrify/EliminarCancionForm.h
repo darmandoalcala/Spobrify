@@ -11,16 +11,13 @@ namespace Spobrify {
 	using namespace System::Data;
 	using namespace System::Drawing;
 
-	/// <summary>
-	/// Summary for EditarCancionForm
-	/// </summary>
-	public ref class EditarCancionForm : public System::Windows::Forms::Form
+	public ref class EliminarCancionForm : public System::Windows::Forms::Form
 	{
 	private:
 		Lista* lista;		//puntero a lista original
 
 	public:
-		EditarCancionForm(Lista* listaRef) : lista(listaRef) {
+		EliminarCancionForm(Lista* listaRef) : lista(listaRef) {
 			this->lista = listaRef;
 			InitializeComponent();
 		}
@@ -29,7 +26,7 @@ namespace Spobrify {
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
-		~EditarCancionForm()
+		~EliminarCancionForm()
 		{
 			if (components)
 			{
@@ -47,7 +44,8 @@ namespace Spobrify {
 	private: System::Windows::Forms::TextBox^ Album;
 	private: System::Windows::Forms::TextBox^ Artista;
 	private: System::Windows::Forms::TextBox^ Nombre;
-	private: System::Windows::Forms::Button^ modificar;
+	private: System::Windows::Forms::Button^ eliminar;
+
 	private: System::Windows::Forms::Button^ buscar;
 
 
@@ -70,7 +68,7 @@ namespace Spobrify {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+		System::ComponentModel::Container^ components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -89,7 +87,7 @@ namespace Spobrify {
 			this->Album = (gcnew System::Windows::Forms::TextBox());
 			this->Artista = (gcnew System::Windows::Forms::TextBox());
 			this->Nombre = (gcnew System::Windows::Forms::TextBox());
-			this->modificar = (gcnew System::Windows::Forms::Button());
+			this->eliminar = (gcnew System::Windows::Forms::Button());
 			this->buscar = (gcnew System::Windows::Forms::Button());
 			this->label_idBuscar = (gcnew System::Windows::Forms::Label());
 			this->label_NombreBuscar = (gcnew System::Windows::Forms::Label());
@@ -103,6 +101,7 @@ namespace Spobrify {
 			this->Id->Location = System::Drawing::Point(12, 207);
 			this->Id->Mask = L"99999";
 			this->Id->Name = L"Id";
+			this->Id->ReadOnly = true;
 			this->Id->Size = System::Drawing::Size(36, 20);
 			this->Id->TabIndex = 21;
 			this->Id->ValidatingType = System::Int32::typeid;
@@ -113,8 +112,7 @@ namespace Spobrify {
 			this->label_id->AutoSize = true;
 			this->label_id->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label_id->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
-				static_cast<System::Int32>(static_cast<System::Byte>(125)));
+			this->label_id->ForeColor = System::Drawing::Color::Maroon;
 			this->label_id->Location = System::Drawing::Point(12, 184);
 			this->label_id->Name = L"label_id";
 			this->label_id->Size = System::Drawing::Size(25, 20);
@@ -127,8 +125,7 @@ namespace Spobrify {
 			this->label_duracion->AutoSize = true;
 			this->label_duracion->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label_duracion->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
-				static_cast<System::Int32>(static_cast<System::Byte>(125)));
+			this->label_duracion->ForeColor = System::Drawing::Color::Maroon;
 			this->label_duracion->Location = System::Drawing::Point(8, 368);
 			this->label_duracion->Name = L"label_duracion";
 			this->label_duracion->Size = System::Drawing::Size(86, 20);
@@ -141,8 +138,7 @@ namespace Spobrify {
 			this->label_album->AutoSize = true;
 			this->label_album->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label_album->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
-				static_cast<System::Int32>(static_cast<System::Byte>(125)));
+			this->label_album->ForeColor = System::Drawing::Color::Maroon;
 			this->label_album->Location = System::Drawing::Point(8, 322);
 			this->label_album->Name = L"label_album";
 			this->label_album->Size = System::Drawing::Size(158, 20);
@@ -155,8 +151,7 @@ namespace Spobrify {
 			this->label_artista->AutoSize = true;
 			this->label_artista->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label_artista->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
-				static_cast<System::Int32>(static_cast<System::Byte>(125)));
+			this->label_artista->ForeColor = System::Drawing::Color::Maroon;
 			this->label_artista->Location = System::Drawing::Point(8, 276);
 			this->label_artista->Name = L"label_artista";
 			this->label_artista->Size = System::Drawing::Size(182, 20);
@@ -169,8 +164,7 @@ namespace Spobrify {
 			this->label_nombre->AutoSize = true;
 			this->label_nombre->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->label_nombre->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
-				static_cast<System::Int32>(static_cast<System::Byte>(125)));
+			this->label_nombre->ForeColor = System::Drawing::Color::Maroon;
 			this->label_nombre->Location = System::Drawing::Point(12, 230);
 			this->label_nombre->Name = L"label_nombre";
 			this->label_nombre->Size = System::Drawing::Size(187, 20);
@@ -183,6 +177,7 @@ namespace Spobrify {
 			this->Duracion->Location = System::Drawing::Point(12, 391);
 			this->Duracion->Mask = L"00:00";
 			this->Duracion->Name = L"Duracion";
+			this->Duracion->ReadOnly = true;
 			this->Duracion->Size = System::Drawing::Size(36, 20);
 			this->Duracion->TabIndex = 15;
 			this->Duracion->ValidatingType = System::DateTime::typeid;
@@ -192,6 +187,7 @@ namespace Spobrify {
 			// 
 			this->Album->Location = System::Drawing::Point(12, 345);
 			this->Album->Name = L"Album";
+			this->Album->ReadOnly = true;
 			this->Album->Size = System::Drawing::Size(256, 20);
 			this->Album->TabIndex = 14;
 			this->Album->Visible = false;
@@ -200,6 +196,7 @@ namespace Spobrify {
 			// 
 			this->Artista->Location = System::Drawing::Point(12, 299);
 			this->Artista->Name = L"Artista";
+			this->Artista->ReadOnly = true;
 			this->Artista->Size = System::Drawing::Size(256, 20);
 			this->Artista->TabIndex = 13;
 			this->Artista->Visible = false;
@@ -208,25 +205,25 @@ namespace Spobrify {
 			// 
 			this->Nombre->Location = System::Drawing::Point(12, 253);
 			this->Nombre->Name = L"Nombre";
+			this->Nombre->ReadOnly = true;
 			this->Nombre->Size = System::Drawing::Size(256, 20);
 			this->Nombre->TabIndex = 12;
 			this->Nombre->Visible = false;
 			// 
-			// modificar
+			// eliminar
 			// 
-			this->modificar->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
-				static_cast<System::Int32>(static_cast<System::Byte>(125)));
-			this->modificar->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->eliminar->BackColor = System::Drawing::Color::Maroon;
+			this->eliminar->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			this->modificar->ForeColor = System::Drawing::Color::White;
-			this->modificar->Location = System::Drawing::Point(166, 416);
-			this->modificar->Name = L"modificar";
-			this->modificar->Size = System::Drawing::Size(106, 37);
-			this->modificar->TabIndex = 11;
-			this->modificar->Text = L"Modificar";
-			this->modificar->UseVisualStyleBackColor = false;
-			this->modificar->Visible = false;
-			this->modificar->Click += gcnew System::EventHandler(this, &EditarCancionForm::modificar_Click);
+			this->eliminar->ForeColor = System::Drawing::Color::White;
+			this->eliminar->Location = System::Drawing::Point(166, 416);
+			this->eliminar->Name = L"eliminar";
+			this->eliminar->Size = System::Drawing::Size(106, 37);
+			this->eliminar->TabIndex = 11;
+			this->eliminar->Text = L"Eliminar";
+			this->eliminar->UseVisualStyleBackColor = false;
+			this->eliminar->Visible = false;
+			this->eliminar->Click += gcnew System::EventHandler(this, &EliminarCancionForm::modificar_Click);
 			// 
 			// buscar
 			// 
@@ -241,7 +238,7 @@ namespace Spobrify {
 			this->buscar->TabIndex = 22;
 			this->buscar->Text = L"Buscar Canción";
 			this->buscar->UseVisualStyleBackColor = false;
-			this->buscar->Click += gcnew System::EventHandler(this, &EditarCancionForm::buscar_Click);
+			this->buscar->Click += gcnew System::EventHandler(this, &EliminarCancionForm::buscar_Click);
 			// 
 			// label_idBuscar
 			// 
@@ -297,11 +294,11 @@ namespace Spobrify {
 			this->nueva_busqueda_boton->TabIndex = 27;
 			this->nueva_busqueda_boton->Text = L"Nueva Busqueda";
 			this->nueva_busqueda_boton->UseVisualStyleBackColor = false;
-			this->nueva_busqueda_boton->Click += gcnew System::EventHandler(this, &EditarCancionForm::nueva_busqueda_boton_Click);
+			this->nueva_busqueda_boton->Click += gcnew System::EventHandler(this, &EliminarCancionForm::nueva_busqueda_boton_Click);
 			// 
-			// EditarCancionForm
+			// EliminarCancionForm
 			// 
-			this->AcceptButton = this->modificar;
+			this->AcceptButton = this->eliminar;
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)),
@@ -323,13 +320,13 @@ namespace Spobrify {
 			this->Controls->Add(this->Album);
 			this->Controls->Add(this->Artista);
 			this->Controls->Add(this->Nombre);
-			this->Controls->Add(this->modificar);
+			this->Controls->Add(this->eliminar);
 			this->MaximizeBox = false;
 			this->MinimizeBox = false;
-			this->Name = L"EditarCancionForm";
+			this->Name = L"EliminarCancionForm";
 			this->Opacity = 0.85;
 			this->ShowIcon = false;
-			this->Text = L"Editar canción";
+			this->Text = L"Eliminar canción";
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -362,7 +359,7 @@ namespace Spobrify {
 				this->Artista->Visible = false;
 				this->Album->Visible = false;
 				this->Duracion->Visible = false;
-				this->modificar->Visible = false;
+				this->eliminar->Visible = false;
 			}
 			else {
 				//*******************OCULTAR********************
@@ -382,7 +379,7 @@ namespace Spobrify {
 				this->Artista->Visible = true;
 				this->Album->Visible = true;
 				this->Duracion->Visible = true;
-				this->modificar->Visible = true;
+				this->eliminar->Visible = true;
 
 				oldId = lista->buscarPorNombreYID(nombre_BUSQ, id_BUSQ)->cancion.getId();
 				oldNombre = lista->buscarPorNombreYID(nombre_BUSQ, id_BUSQ)->cancion.getNombre();
@@ -390,17 +387,17 @@ namespace Spobrify {
 				oldAlbum = lista->buscarPorNombreYID(nombre_BUSQ, id_BUSQ)->cancion.getNombreAlbum();
 				oldDuracion = lista->buscarPorNombreYID(nombre_BUSQ, id_BUSQ)->cancion.getDuracion();
 
-				System::String^ viejoID = oldId.ToString();
-				System::String^ viejoNOMBRE = msclr::interop::marshal_as<System::String^>(oldNombre);
-				System::String^ viejoARTISTA = msclr::interop::marshal_as<System::String^>(oldArtista);
-				System::String^ viejoALBUM = msclr::interop::marshal_as<System::String^>(oldAlbum);
-				System::String^ viejoDURACION = msclr::interop::marshal_as<System::String^>(oldDuracion);
+				System::String^ id = oldId.ToString();
+				System::String^ nombre = msclr::interop::marshal_as<System::String^>(oldNombre);
+				System::String^ artista = msclr::interop::marshal_as<System::String^>(oldArtista);
+				System::String^ album = msclr::interop::marshal_as<System::String^>(oldAlbum);
+				System::String^ duracion = msclr::interop::marshal_as<System::String^>(oldDuracion);
 
-				this->Id->Text = viejoID;
-				this->Nombre->Text = viejoNOMBRE;
-				this->Artista->Text = viejoARTISTA;
-				this->Album->Text = viejoALBUM;
-				this->Duracion->Text = viejoDURACION;
+				this->Id->Text = id;
+				this->Nombre->Text = nombre;
+				this->Artista->Text = artista;
+				this->Album->Text = album;
+				this->Duracion->Text = duracion;
 
 			}
 		}
@@ -418,7 +415,7 @@ namespace Spobrify {
 		this->Artista->Visible = false;
 		this->Album->Visible = false;
 		this->Duracion->Visible = false;
-		this->modificar->Visible = false;
+		this->eliminar->Visible = false;
 
 		//*******************REINICIA********************
 		this->nombre_Buscar->Text = "";
@@ -432,30 +429,21 @@ namespace Spobrify {
 
 	}
 	private: System::Void modificar_Click(System::Object^ sender, System::EventArgs^ e) {
-		string newIdString, newNombre, newArtista, newAlbum, newDuracion;
-		int id_BUSQ = 0, newId = 0;
-
-		// Obtener los datos de los TextBoxes de BUSQUEDA
+		// Obtener los datos de los TextBoxs
 		std::string idCrudo = msclr::interop::marshal_as<std::string>(this->id_Buscar->Text);
 		string nombre_BUSQ = msclr::interop::marshal_as<std::string>(this->nombre_Buscar->Text);
-
 		if (idCrudo != "" && lista->getContador()) {//Si el ID no está vacio y si el contador es mayor a 1
 			int id_BUSQ = stoi(idCrudo);
+			
+			// Eliminar
 
-			newIdString = msclr::interop::marshal_as<std::string>(this->Id->Text);
-			newId = stoi(newIdString);
-			newNombre = msclr::interop::marshal_as<std::string>(this->Nombre->Text);
-			newArtista = msclr::interop::marshal_as<std::string>(this->Artista->Text);
-			newAlbum = msclr::interop::marshal_as<std::string>(this->Album->Text);
-			newDuracion = msclr::interop::marshal_as<std::string>(this->Duracion->Text);
-
-			// Crear una nueva canción y agregarla a la lista
-
-			lista->modificar(nombre_BUSQ, id_BUSQ, newId, newNombre, newArtista, newAlbum, newDuracion);
-
-			// Cerrar el formulario
-			this->Close();
+			lista->eliminar(nombre_BUSQ, id_BUSQ);
 		}
+
+
+
+		// Cerrar el formulario
+		this->Close();
 	}
-};
+	};
 }
