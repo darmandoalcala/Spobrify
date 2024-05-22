@@ -223,7 +223,7 @@ namespace Spobrify {
 			this->Name = L"AgregarCancionForm";
 			this->Opacity = 0.85;
 			this->ShowIcon = false;
-			this->Text = L"AgregarCancionForm";
+			this->Text = L"Agregar canción";
 			this->ResumeLayout(false);
 			this->PerformLayout();
 

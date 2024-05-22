@@ -67,6 +67,9 @@ public:
 			delete actual;
 		}
 	}
+	Nodo* obtenerPrimerNodo() const {
+		return header;
+	}
 	Nodo* buscarPorId(int id) {
 		Nodo* actual = header;
 
@@ -86,6 +89,26 @@ public:
 
 		return actual;		//si no se encuentra el id se retorna nullptr
 
+	}
+	Nodo* buscarPorNombreYID(const string& nombre, int id) {
+		Nodo* actual = header;
+		while (actual != nullptr) {
+			if (actual->cancion.getNombre() == nombre && actual->cancion.getId() == id) {
+				return actual;
+			}
+			actual = actual->siguiente;
+		}
+		return nullptr; // Si no se encuentra
+	}
+	void modificar(string nombre, int id,const int& nuevoId, const string& nuevoNombre, const string& nuevoArtista, const string& nuevoAlbum, const string& nuevaDuracion) {
+		Nodo* actual = buscarPorNombreYID(nombre, id);
+		if (actual != nullptr) {	//si no se encuentra el id no entra
+			actual->cancion.setId(nuevoId);
+			actual->cancion.setNombre(nuevoNombre);
+			actual->cancion.setNombreArtista(nuevoArtista);
+			actual->cancion.setNombreAlbum(nuevoAlbum);
+			actual->cancion.setDuracion(nuevaDuracion);
+		}
 	}
 	string concatenarTodas() const {
 		Nodo* actual = header;

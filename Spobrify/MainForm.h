@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <iostream>
 #include "AgregarCancionForm.h"
+#include "EditarCancionForm.h"
 using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
@@ -19,11 +20,19 @@ namespace Spobrify {
 	public ref class MainForm : public System::Windows::Forms::Form
 	{
 	private:
-		Lista* lista;	
+		Lista* lista;
+		Image^ PlayImage;
+		Image^ PauseImage;
+
+		Nodo* reproduciendo;
 	public:
 		MainForm(Lista* lista)
 		{
+			this->reproduciendo = nullptr;
 			this->lista = lista;
+			PlayImage = Image::FromFile("play.png");
+			PauseImage = Image::FromFile("pause.png");
+
 			InitializeComponent();
 		}
 
@@ -73,6 +82,12 @@ namespace Spobrify {
 	private: System::Windows::Forms::Label^ encontradaLabel;
 
 	private: System::Windows::Forms::PictureBox^ encontradaImagen;
+	private: System::Windows::Forms::PictureBox^ editar_boton;
+	private: System::Windows::Forms::PictureBox^ eliminar_boton;
+
+	private: System::Windows::Forms::ProgressBar^ progressBar_reproduciendo;
+
+
 
 
 
@@ -89,13 +104,15 @@ namespace Spobrify {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(MainForm::typeid));
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle4 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle5 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
-			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle6 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle1 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle2 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
+			System::Windows::Forms::DataGridViewCellStyle^ dataGridViewCellStyle3 = (gcnew System::Windows::Forms::DataGridViewCellStyle());
 			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->eliminar_boton = (gcnew System::Windows::Forms::PictureBox());
 			this->disco3 = (gcnew System::Windows::Forms::PictureBox());
 			this->disco2 = (gcnew System::Windows::Forms::PictureBox());
 			this->disco1 = (gcnew System::Windows::Forms::PictureBox());
+			this->editar_boton = (gcnew System::Windows::Forms::PictureBox());
 			this->canciones_boton = (gcnew System::Windows::Forms::PictureBox());
 			this->agregar_boton = (gcnew System::Windows::Forms::PictureBox());
 			this->panel2 = (gcnew System::Windows::Forms::Panel());
@@ -125,10 +142,13 @@ namespace Spobrify {
 			this->anterior = (gcnew System::Windows::Forms::PictureBox());
 			this->titulo_cancion_actual = (gcnew System::Windows::Forms::Label());
 			this->cover_imagen = (gcnew System::Windows::Forms::PictureBox());
+			this->progressBar_reproduciendo = (gcnew System::Windows::Forms::ProgressBar());
 			this->panel1->SuspendLayout();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->eliminar_boton))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco3))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco2))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco1))->BeginInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->editar_boton))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canciones_boton))->BeginInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->agregar_boton))->BeginInit();
 			this->panel2->SuspendLayout();
@@ -155,9 +175,11 @@ namespace Spobrify {
 				| System::Windows::Forms::AnchorStyles::Left));
 			this->panel1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)),
 				static_cast<System::Int32>(static_cast<System::Byte>(18)));
+			this->panel1->Controls->Add(this->eliminar_boton);
 			this->panel1->Controls->Add(this->disco3);
 			this->panel1->Controls->Add(this->disco2);
 			this->panel1->Controls->Add(this->disco1);
+			this->panel1->Controls->Add(this->editar_boton);
 			this->panel1->Controls->Add(this->canciones_boton);
 			this->panel1->Controls->Add(this->agregar_boton);
 			this->panel1->Location = System::Drawing::Point(2, 131);
@@ -165,13 +187,26 @@ namespace Spobrify {
 			this->panel1->Size = System::Drawing::Size(60, 478);
 			this->panel1->TabIndex = 0;
 			// 
+			// eliminar_boton
+			// 
+			this->eliminar_boton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->eliminar_boton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"eliminar_boton.Image")));
+			this->eliminar_boton->Location = System::Drawing::Point(7, 115);
+			this->eliminar_boton->Name = L"eliminar_boton";
+			this->eliminar_boton->Padding = System::Windows::Forms::Padding(5);
+			this->eliminar_boton->Size = System::Drawing::Size(50, 50);
+			this->eliminar_boton->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
+			this->eliminar_boton->TabIndex = 15;
+			this->eliminar_boton->TabStop = false;
+			this->eliminar_boton->Click += gcnew System::EventHandler(this, &MainForm::eliminar_boton_Click);
+			// 
 			// disco3
 			// 
 			this->disco3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)),
 				static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)));
 			this->disco3->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->disco3->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"disco3.Image")));
-			this->disco3->Location = System::Drawing::Point(7, 227);
+			this->disco3->Location = System::Drawing::Point(7, 339);
 			this->disco3->Name = L"disco3";
 			this->disco3->Padding = System::Windows::Forms::Padding(5);
 			this->disco3->Size = System::Drawing::Size(50, 50);
@@ -185,7 +220,7 @@ namespace Spobrify {
 				static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)));
 			this->disco2->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->disco2->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"disco2.Image")));
-			this->disco2->Location = System::Drawing::Point(7, 171);
+			this->disco2->Location = System::Drawing::Point(7, 283);
 			this->disco2->Name = L"disco2";
 			this->disco2->Padding = System::Windows::Forms::Padding(5);
 			this->disco2->Size = System::Drawing::Size(50, 50);
@@ -199,7 +234,7 @@ namespace Spobrify {
 				static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)));
 			this->disco1->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->disco1->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"disco1.Image")));
-			this->disco1->Location = System::Drawing::Point(7, 115);
+			this->disco1->Location = System::Drawing::Point(7, 227);
 			this->disco1->Name = L"disco1";
 			this->disco1->Padding = System::Windows::Forms::Padding(5);
 			this->disco1->Size = System::Drawing::Size(50, 50);
@@ -208,6 +243,19 @@ namespace Spobrify {
 			this->disco1->TabStop = false;
 			this->disco1->Click += gcnew System::EventHandler(this, &MainForm::disco1_Click);
 			// 
+			// editar_boton
+			// 
+			this->editar_boton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->editar_boton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"editar_boton.Image")));
+			this->editar_boton->Location = System::Drawing::Point(7, 59);
+			this->editar_boton->Name = L"editar_boton";
+			this->editar_boton->Padding = System::Windows::Forms::Padding(5);
+			this->editar_boton->Size = System::Drawing::Size(50, 50);
+			this->editar_boton->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
+			this->editar_boton->TabIndex = 7;
+			this->editar_boton->TabStop = false;
+			this->editar_boton->Click += gcnew System::EventHandler(this, &MainForm::editar_boton_Click);
+			// 
 			// canciones_boton
 			// 
 			this->canciones_boton->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(18)), static_cast<System::Int32>(static_cast<System::Byte>(18)),
@@ -215,7 +263,7 @@ namespace Spobrify {
 			this->canciones_boton->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
 			this->canciones_boton->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->canciones_boton->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"canciones_boton.Image")));
-			this->canciones_boton->Location = System::Drawing::Point(7, 59);
+			this->canciones_boton->Location = System::Drawing::Point(7, 171);
 			this->canciones_boton->Name = L"canciones_boton";
 			this->canciones_boton->Padding = System::Windows::Forms::Padding(5);
 			this->canciones_boton->Size = System::Drawing::Size(50, 50);
@@ -375,13 +423,13 @@ namespace Spobrify {
 			this->cancionesFavoritasGridView->AllowUserToDeleteRows = false;
 			this->cancionesFavoritasGridView->AllowUserToResizeColumns = false;
 			this->cancionesFavoritasGridView->AllowUserToResizeRows = false;
-			dataGridViewCellStyle4->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(67)), static_cast<System::Int32>(static_cast<System::Byte>(47)),
+			dataGridViewCellStyle1->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(67)), static_cast<System::Int32>(static_cast<System::Byte>(47)),
 				static_cast<System::Int32>(static_cast<System::Byte>(132)));
-			dataGridViewCellStyle4->ForeColor = System::Drawing::Color::White;
-			dataGridViewCellStyle4->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(67)),
+			dataGridViewCellStyle1->ForeColor = System::Drawing::Color::White;
+			dataGridViewCellStyle1->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(67)),
 				static_cast<System::Int32>(static_cast<System::Byte>(47)), static_cast<System::Int32>(static_cast<System::Byte>(132)));
-			dataGridViewCellStyle4->SelectionForeColor = System::Drawing::Color::White;
-			this->cancionesFavoritasGridView->AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+			dataGridViewCellStyle1->SelectionForeColor = System::Drawing::Color::White;
+			this->cancionesFavoritasGridView->AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
 			this->cancionesFavoritasGridView->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Bottom)
 				| System::Windows::Forms::AnchorStyles::Left)
 				| System::Windows::Forms::AnchorStyles::Right));
@@ -391,35 +439,35 @@ namespace Spobrify {
 				static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(125)));
 			this->cancionesFavoritasGridView->CellBorderStyle = System::Windows::Forms::DataGridViewCellBorderStyle::SingleVertical;
 			this->cancionesFavoritasGridView->ColumnHeadersBorderStyle = System::Windows::Forms::DataGridViewHeaderBorderStyle::Single;
-			dataGridViewCellStyle5->Alignment = System::Windows::Forms::DataGridViewContentAlignment::TopCenter;
-			dataGridViewCellStyle5->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
+			dataGridViewCellStyle2->Alignment = System::Windows::Forms::DataGridViewContentAlignment::TopCenter;
+			dataGridViewCellStyle2->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
 				static_cast<System::Int32>(static_cast<System::Byte>(125)));
-			dataGridViewCellStyle5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			dataGridViewCellStyle2->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle5->ForeColor = System::Drawing::Color::White;
-			dataGridViewCellStyle5->Padding = System::Windows::Forms::Padding(5, 0, 5, 0);
-			dataGridViewCellStyle5->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)),
+			dataGridViewCellStyle2->ForeColor = System::Drawing::Color::White;
+			dataGridViewCellStyle2->Padding = System::Windows::Forms::Padding(5, 0, 5, 0);
+			dataGridViewCellStyle2->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)),
 				static_cast<System::Int32>(static_cast<System::Byte>(45)), static_cast<System::Int32>(static_cast<System::Byte>(125)));
-			dataGridViewCellStyle5->SelectionForeColor = System::Drawing::Color::White;
-			dataGridViewCellStyle5->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
-			this->cancionesFavoritasGridView->ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+			dataGridViewCellStyle2->SelectionForeColor = System::Drawing::Color::White;
+			dataGridViewCellStyle2->WrapMode = System::Windows::Forms::DataGridViewTriState::True;
+			this->cancionesFavoritasGridView->ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
 			this->cancionesFavoritasGridView->ColumnHeadersHeight = 40;
 			this->cancionesFavoritasGridView->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::DisableResizing;
 			this->cancionesFavoritasGridView->Columns->AddRange(gcnew cli::array< System::Windows::Forms::DataGridViewColumn^  >(5) {
 				this->Id,
 					this->Titulo, this->Artista, this->Album, this->Duracion
 			});
-			dataGridViewCellStyle6->Alignment = System::Windows::Forms::DataGridViewContentAlignment::TopCenter;
-			dataGridViewCellStyle6->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
+			dataGridViewCellStyle3->Alignment = System::Windows::Forms::DataGridViewContentAlignment::TopCenter;
+			dataGridViewCellStyle3->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)), static_cast<System::Int32>(static_cast<System::Byte>(45)),
 				static_cast<System::Int32>(static_cast<System::Byte>(125)));
-			dataGridViewCellStyle6->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			dataGridViewCellStyle3->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 14, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(0)));
-			dataGridViewCellStyle6->ForeColor = System::Drawing::Color::White;
-			dataGridViewCellStyle6->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(54)),
+			dataGridViewCellStyle3->ForeColor = System::Drawing::Color::White;
+			dataGridViewCellStyle3->SelectionBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(54)),
 				static_cast<System::Int32>(static_cast<System::Byte>(35)), static_cast<System::Int32>(static_cast<System::Byte>(105)));
-			dataGridViewCellStyle6->SelectionForeColor = System::Drawing::SystemColors::ButtonFace;
-			dataGridViewCellStyle6->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
-			this->cancionesFavoritasGridView->DefaultCellStyle = dataGridViewCellStyle6;
+			dataGridViewCellStyle3->SelectionForeColor = System::Drawing::SystemColors::ButtonFace;
+			dataGridViewCellStyle3->WrapMode = System::Windows::Forms::DataGridViewTriState::False;
+			this->cancionesFavoritasGridView->DefaultCellStyle = dataGridViewCellStyle3;
 			this->cancionesFavoritasGridView->EditMode = System::Windows::Forms::DataGridViewEditMode::EditOnEnter;
 			this->cancionesFavoritasGridView->EnableHeadersVisualStyles = false;
 			this->cancionesFavoritasGridView->GridColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(64)),
@@ -611,39 +659,42 @@ namespace Spobrify {
 			this->reproducir->Anchor = System::Windows::Forms::AnchorStyles::Bottom;
 			this->reproducir->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->reproducir->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"reproducir.Image")));
-			this->reproducir->Location = System::Drawing::Point(615, 619);
+			this->reproducir->Location = System::Drawing::Point(615, 615);
 			this->reproducir->Name = L"reproducir";
 			this->reproducir->Padding = System::Windows::Forms::Padding(5);
-			this->reproducir->Size = System::Drawing::Size(50, 50);
+			this->reproducir->Size = System::Drawing::Size(40, 40);
 			this->reproducir->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
 			this->reproducir->TabIndex = 7;
 			this->reproducir->TabStop = false;
+			this->reproducir->Click += gcnew System::EventHandler(this, &MainForm::reproducir_Click);
 			// 
 			// siguiente
 			// 
 			this->siguiente->Anchor = System::Windows::Forms::AnchorStyles::Bottom;
 			this->siguiente->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->siguiente->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"siguiente.Image")));
-			this->siguiente->Location = System::Drawing::Point(685, 619);
+			this->siguiente->Location = System::Drawing::Point(685, 615);
 			this->siguiente->Name = L"siguiente";
 			this->siguiente->Padding = System::Windows::Forms::Padding(5);
-			this->siguiente->Size = System::Drawing::Size(50, 50);
+			this->siguiente->Size = System::Drawing::Size(40, 40);
 			this->siguiente->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
 			this->siguiente->TabIndex = 8;
 			this->siguiente->TabStop = false;
+			this->siguiente->Click += gcnew System::EventHandler(this, &MainForm::siguiente_Click);
 			// 
 			// anterior
 			// 
 			this->anterior->Anchor = System::Windows::Forms::AnchorStyles::Bottom;
 			this->anterior->Cursor = System::Windows::Forms::Cursors::Hand;
 			this->anterior->Image = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"anterior.Image")));
-			this->anterior->Location = System::Drawing::Point(545, 619);
+			this->anterior->Location = System::Drawing::Point(545, 615);
 			this->anterior->Name = L"anterior";
 			this->anterior->Padding = System::Windows::Forms::Padding(5);
-			this->anterior->Size = System::Drawing::Size(50, 50);
+			this->anterior->Size = System::Drawing::Size(40, 40);
 			this->anterior->SizeMode = System::Windows::Forms::PictureBoxSizeMode::StretchImage;
 			this->anterior->TabIndex = 9;
 			this->anterior->TabStop = false;
+			this->anterior->Click += gcnew System::EventHandler(this, &MainForm::anterior_Click);
 			// 
 			// titulo_cancion_actual
 			// 
@@ -671,6 +722,15 @@ namespace Spobrify {
 			this->cover_imagen->TabIndex = 10;
 			this->cover_imagen->TabStop = false;
 			// 
+			// progressBar_reproduciendo
+			// 
+			this->progressBar_reproduciendo->Anchor = static_cast<System::Windows::Forms::AnchorStyles>(((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Left)
+				| System::Windows::Forms::AnchorStyles::Right));
+			this->progressBar_reproduciendo->Location = System::Drawing::Point(545, 661);
+			this->progressBar_reproduciendo->Name = L"progressBar_reproduciendo";
+			this->progressBar_reproduciendo->Size = System::Drawing::Size(180, 11);
+			this->progressBar_reproduciendo->TabIndex = 11;
+			// 
 			// MainForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
@@ -678,6 +738,7 @@ namespace Spobrify {
 			this->AutoSize = true;
 			this->BackColor = System::Drawing::Color::Black;
 			this->ClientSize = System::Drawing::Size(1264, 681);
+			this->Controls->Add(this->progressBar_reproduciendo);
 			this->Controls->Add(this->cover_imagen);
 			this->Controls->Add(this->titulo_cancion_actual);
 			this->Controls->Add(this->siguiente);
@@ -690,9 +751,11 @@ namespace Spobrify {
 			this->Name = L"MainForm";
 			this->Text = L"MainForm";
 			this->panel1->ResumeLayout(false);
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->eliminar_boton))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco3))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco2))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->disco1))->EndInit();
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->editar_boton))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->canciones_boton))->EndInit();
 			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->agregar_boton))->EndInit();
 			this->panel2->ResumeLayout(false);
@@ -717,7 +780,7 @@ namespace Spobrify {
 
 		}
 #pragma endregion
-	private: System::Void inicio_boton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void inicio_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//PANTALLA DE INICIO
 		//**************OCULTAR********************
 		this->panel3->BackgroundImage = nullptr;
 		this->canciones_img->Visible = false;
@@ -739,7 +802,7 @@ namespace Spobrify {
 		this->titulo_label->Visible = true;	
 	}
 
-	private: System::Void buscar_boton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void buscar_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//BUSCAR CANCION POR TITULO (PANTALLA)
 		//**************OCULTAR********************
 		this->canciones_img->Visible = false;
 		this->canciones_titulo->Visible = false;
@@ -763,7 +826,7 @@ namespace Spobrify {
 
 	}
 
-	private: System::Void buscarCancionBoton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void buscarCancionBoton_Click(System::Object^ sender, System::EventArgs^ e) {														//BUSCAR CANCION BOTON (UNA VEZ ESCRITO EL TITULO DE LA CANCION)
 		std::string nombreABuscar = msclr::interop::marshal_as<std::string>(this->buscarText->Text);
 		this->encontradaImagen->Visible = false;
 		this->encontradaLabel->Visible = false;
@@ -793,13 +856,13 @@ namespace Spobrify {
 
 	}
 
-	private: System::Void agregar_boton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void agregar_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//AGREGAR CANCION
 		//Abre nueva ventana (parametro lista de referencia).
 		AgregarCancionForm^ agregarForm = gcnew AgregarCancionForm(lista);
 		agregarForm->ShowDialog();
 	}
 
-	private: System::Void canciones_boton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void canciones_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//CANCIONES FAVORITAS
 		//**************OCULTAR********************
 		this->panel3->BackgroundImage = nullptr;
 		this->titulo_label->Visible = false;
@@ -822,24 +885,24 @@ namespace Spobrify {
 		this->aleatorio_boton->Visible = true;
 		this->ordenar_boton->Visible = true;
 
-		llenarGridViewFavoritas();
+		llenarGridViewFavoritas();									//Actualizar pantalla favoritas
 
 	}
-	private: System::Void play_boton_Click(System::Object^ sender, System::EventArgs^ e) {
-		
+	private: System::Void play_boton_Click(System::Object^ sender, System::EventArgs^ e) {																//PLAY (ME GUSTA)
+		this->reproducir_Click(sender, e);
 	}
-	private: System::Void aleatorio_boton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void aleatorio_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//MODO ALEATORIO
 		//DESORDENA, modo "shuffle"
 		lista->shuffle();
-		llenarGridViewFavoritas();
+		llenarGridViewFavoritas();									//Actualizar pantalla favoritas
 	}
-	private: System::Void ordenar_boton_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void ordenar_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//ORDENAR POR TITULO (BUBBLESORT)
 		//ORDENA por nombre de canción "A" a la "Z"
 		lista->ordenarPorNombre();
-		llenarGridViewFavoritas();
+		llenarGridViewFavoritas();									//Actualizar pantalla favoritas
 		
 	}
-	private: System::Void disco1_Click(System::Object^ sender, System::EventArgs^ e) {
+	private: System::Void disco1_Click(System::Object^ sender, System::EventArgs^ e) {																	//PUSH DE PRUEBA
 		//PRUEBA ***********
 		//Inserta todo el disco "GENESIS - Peso Pluma"
 		Cancion cancion1(1, "ROSA PASTEL", "Peso Pluma, Jasiel Nuñez", "GÉNESIS", "03:24");						lista->insertarFinal(cancion1);
@@ -859,10 +922,10 @@ namespace Spobrify {
 		cancion1.modificar(15, "TULUM", "Peso Pluma, Grup Frontera", "GÉNESIS", "03:29");						lista->insertarFinal(cancion1);
 		cancion1.modificar(16, "LAGUNAS", "Peso Pluma, Jasiel Nuñez", "GÉNESIS", "03:51");						lista->insertarFinal(cancion1);
 		cancion1.modificar(17, "BYE", "Peso Pluma", "GÉNESIS", "03:32");										lista->insertarFinal(cancion1);
-		llenarGridViewFavoritas();
+		llenarGridViewFavoritas();									//Actualizar pantalla favoritas
 	}
 
-	void llenarGridViewFavoritas() {
+	void llenarGridViewFavoritas() {																													//LLENAR GRID DE CANCIONES FAVORITAS (REQUEST)
 		//LIMPIA COLUMNAS Y FILAS
 		cancionesFavoritasGridView->Columns->Clear();
 		cancionesFavoritasGridView->Rows->Clear();
@@ -886,10 +949,111 @@ namespace Spobrify {
 		mostrarTotalCancionesFavoritas();
 	}
 
-	void mostrarTotalCancionesFavoritas() {
+	void mostrarTotalCancionesFavoritas() {																												//CONSEGUIR Y MOSTRAR CONTADOR DE LISTA
 		//Consulta el total de nodos para mostrarlo en el label correspondiente en canciones favoritas
 		this->cancionesAgregadas_label->Text = lista->getContador().ToString() + L" canciones favoritas";
 	}
 	
+	private: System::Void editar_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//EDITAR CAMCION
+		//Abre nueva ventana (parametro lista de referencia).
+		EditarCancionForm^ editarForm = gcnew EditarCancionForm(lista);
+		editarForm->ShowDialog();
+		llenarGridViewFavoritas();									//Actualizar pantalla favoritas
+	}
+
+	private: System::Void eliminar_boton_Click(System::Object^ sender, System::EventArgs^ e) {															//ELIMINAR CAMCION
+		//Abre nueva ventana (parametro lista de referencia).
+	}
+	private: System::Void reproducir_Click(System::Object^ sender, System::EventArgs^ e) {																//REPRODUCIR ACTUAL
+		if (this->reproduciendo == nullptr) {//SI NO REPRODUCE NADA ACTUALMENTE
+			this->reproduciendo = lista->obtenerPrimerNodo();//Consigue la primera canción
+
+			if (this->reproduciendo == nullptr) {//Si no encuentra (se retorno nullptr de header
+				this->progressBar_reproduciendo->Value = 0;//NO Reproduce, por lo tanto la barra se ve al 0%
+				this->titulo_cancion_actual->Text = "";
+			}
+			else {//Si sí se encuentra el primer nodo
+				this->progressBar_reproduciendo->Value = 50;//Reproduce, por lo tanto la barra se ve al 50%
+				this->reproducir->Image = (PauseImage);				//IMAGEN PAUSE
+				this->play_boton->Image = (PauseImage);
+
+				//MOSTRAR TITULO DE CANCION ACTUAL:::
+				stringstream ss;//flujo de cadena
+				ss << this->reproduciendo->cancion.getId()
+					<< ". "
+					<< this->reproduciendo->cancion.getNombre()
+					<< "\n"
+					<< this->reproduciendo->cancion.getNombreArtista()
+					<< "  "
+					<< this->reproduciendo->cancion.getNombreAlbum()
+					<< "  "
+					<< this->reproduciendo->cancion.getDuracion();
+
+				System::String^ infoReproduciendo = msclr::interop::marshal_as<System::String^>(ss.str());
+				this->titulo_cancion_actual->Text = infoReproduciendo;
+			}
+		}
+		else{
+			//CAMBIA EL ICONO ENTRE PLAY Y PAUSE
+			if (this->progressBar_reproduciendo->Value == 50) {     //Si esta en play, poner pause
+				this->progressBar_reproduciendo->Value = 0;
+				this->reproducir->Image = (PlayImage);				//IMAGEN PLAY
+				this->play_boton->Image = (PlayImage);
+			}
+			else {													//Sino poner play
+				this->progressBar_reproduciendo->Value = 50;
+				this->reproducir->Image = (PauseImage);				//IMAGEN PAUSE
+				this->play_boton->Image = (PauseImage);
+			}
+		}
+	}
+	private: System::Void siguiente_Click(System::Object^ sender, System::EventArgs^ e) {																//ACTUAL -> SIGUIENTE
+		if (this->reproduciendo == nullptr) {//SI NO REPRODUCE NADA ACTUALMENTE
+			//No hace nada.
+		}
+		else {
+			if (this->reproduciendo->siguiente != nullptr) {		//Si hay cancion siguiente
+				this->reproduciendo = this->reproduciendo->siguiente;//SE MUEVE EN LA LISTA
+				//MOSTRAR TITULO DE CANCION ACTUAL:::
+				stringstream ss;//flujo de cadena
+				ss << this->reproduciendo->cancion.getId()
+					<< ". "
+					<< this->reproduciendo->cancion.getNombre()
+					<< "\n"
+					<< this->reproduciendo->cancion.getNombreArtista()
+					<< "  "
+					<< this->reproduciendo->cancion.getNombreAlbum()
+					<< "  "
+					<< this->reproduciendo->cancion.getDuracion();
+
+				System::String^ infoReproduciendo = msclr::interop::marshal_as<System::String^>(ss.str());
+				this->titulo_cancion_actual->Text = infoReproduciendo;
+			}
+		}
+	}
+	private: System::Void anterior_Click(System::Object^ sender, System::EventArgs^ e) {																//ACTUAL -> ANTERIOR
+		if (this->reproduciendo == nullptr) {//SI NO REPRODUCE NADA ACTUALMENTE
+			//No hace nada.
+		}
+		else {
+			if (this->reproduciendo->anterior != nullptr) {		//Si hay cancion siguiente
+				this->reproduciendo = this->reproduciendo->anterior;//SE MUEVE EN LA LISTA
+				//MOSTRAR TITULO DE CANCION ACTUAL:::
+				stringstream ss;//flujo de cadena
+				ss << this->reproduciendo->cancion.getId()
+					<< ". "
+					<< this->reproduciendo->cancion.getNombre()
+					<< "\n"
+					<< this->reproduciendo->cancion.getNombreArtista()
+					<< "  "
+					<< this->reproduciendo->cancion.getNombreAlbum()
+					<< "  "
+					<< this->reproduciendo->cancion.getDuracion();
+
+				System::String^ infoReproduciendo = msclr::interop::marshal_as<System::String^>(ss.str());
+				this->titulo_cancion_actual->Text = infoReproduciendo;
+			}
+		}
+	}
 };
 }

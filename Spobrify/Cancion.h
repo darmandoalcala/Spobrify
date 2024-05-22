@@ -14,41 +14,17 @@ public:
 	Cancion() : id(0), nombre(""), nombreArtista(""), nombreAlbum(""), duracion("") {}
 	Cancion(int id, string nombre, string artista, string album, string duracion) : id(id), nombre(nombre), nombreArtista(artista), nombreAlbum(album), duracion(duracion) {}
 	//setters
-	void setId(int newId) {
-		id = newId;
-	}
-
-	void setNombre(string newNombre) {
-		this->nombre = newNombre;
-	}
-
-	void setNombreArtista(string newNombreArtista) {
-		this->nombreArtista = newNombreArtista;
-	}
-
-	void setNombreAlbum(string newNombreAlbum) {
-		this->nombreAlbum = newNombreAlbum;
-	}
-
-	void setDuracion(string newDuracion) {
-		this->duracion = newDuracion;
-	}
+	void setId(int newId) { id = newId; }
+	void setNombre(const string& newNombre) { nombre = newNombre; }
+	void setNombreArtista(const string& newArtista) { nombreArtista = newArtista; }
+	void setNombreAlbum(const string& newAlbum) { nombreAlbum = newAlbum; }
+	void setDuracion(const string& newDuracion) { duracion = newDuracion; }
 	//getters
-	int getId() const {
-		return id;
-	}
-	string getNombre() const {
-		return nombre;
-	}
-	string getNombreArtista() const {
-		return nombreArtista;
-	}
-	string getNombreAlbum() const {
-		return nombreAlbum;
-	}
-	string getDuracion() const {
-		return duracion;
-	}
+	int getId() const { return id; }
+	string getNombre() const { return nombre; }
+	string getNombreArtista() const { return nombreArtista; }
+	string getNombreAlbum() const { return nombreAlbum; }
+	string getDuracion() const { return duracion; }
 	//modificar
 	void modificar(int newId, string newNombre, string newArtista, string newAlbum, string newDuracion) {
 		this ->id = newId;
